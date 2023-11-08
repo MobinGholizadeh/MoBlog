@@ -18,5 +18,5 @@ urlpatterns = [
 
 # this if says that if we are in DEBUG mode add this to our url patterns
 if settings.DEBUG:
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
