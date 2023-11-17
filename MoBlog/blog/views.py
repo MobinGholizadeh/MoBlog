@@ -1,6 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import render , get_object_or_404
 from . models import post
 from django.contrib.auth.mixins import LoginRequiredMixin , UserPassesTestMixin
+from django.contrib.auth.models import User
 from django.views.generic import (  
     ListView ,
     DetailView ,
@@ -21,6 +22,7 @@ class PostListView(ListView):
     template_name = 'blog/home.html'  # <app>/<model><viewtype>.html
     context_object_name = 'posts'
     ordering = ['-date_posted']
+    paginate_by = 6   #this is where we say how many posts we want to show on every page
 
 class PostDetailView(DetailView):
     model = post
@@ -63,6 +65,15 @@ class PostDeleteView(LoginRequiredMixin , UserPassesTestMixin , DeleteView):
         return False   
     
 
+class UserPostListView(ListView):
+    model = post
+    template_name = 'blog/user_posts.html'  # <app>/<model><viewtype>.html
+    context_object_name = 'posts'
+    paginate_by = 6
+
+    def get_queryset(self):
+        user = get_object_or_404(User , username=self.kwargs.get('username'))
+        return post.objects.filter(author=user).order_by('-date_posted')
 
 
 def about(request):
